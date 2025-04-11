@@ -10,4 +10,8 @@ I'd be happy to add more features as long as they align with the general philoso
 of compile-time reflection.
 
 Unfortunately, there is very little documentation right now.
-Hopefully that will change in the future.
+Hopefully, that will change in the future.
+
+## Related Projects
+- [facet](https://github.com/facet-rs/facet) - Very similar, much more recent, appears very high quality.
+- [const-type-layout](https://github.com/juntyr/const-type-layout) - Similar, but far more complex use of type system. Requires specialization and many other nightly features.
