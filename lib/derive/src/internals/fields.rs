@@ -54,7 +54,7 @@ impl DeriveFieldOptions {
                             syn::parse_str::<Type>(&type_str.value()).map_err(|cause| {
                                 syn::Error::new(
                                     type_str.span(),
-                                    format_args!("Invalid type: {}", cause),
+                                    format_args!("Invalid type: {cause}"),
                                 )
                             })?;
                         args.assume_repr = Some(desired_type);
@@ -165,8 +165,8 @@ fn handle_type<'a, T: TypeHandler<'a>>(
             }
         }
     })?;
-    let field_info_struct_name = Ident::new(&format!("_FieldInfo{}", name), name.span());
-    let field_info_trait_name = Ident::new(&format!("_FieldTrait{}", name), name.span());
+    let field_info_struct_name = Ident::new(&format!("_FieldInfo{name}"), name.span());
+    let field_info_trait_name = Ident::new(&format!("_FieldTrait{name}"), name.span());
     let associated_type_names = field_info.keys().map(FieldName::associated_type_name);
     let field_info_struct_def = {
         let fields = quote!(#(#field_defs),*);

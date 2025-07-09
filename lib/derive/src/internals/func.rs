@@ -33,7 +33,7 @@ impl Parse for FuncArgs {
                     "absolute" => {
                         args.absolute = true;
                     }
-                    _ => return Err(input.error(format_args!("Invalid flag: {}", ident))),
+                    _ => return Err(input.error(format_args!("Invalid flag: {ident}"))),
                 }
             } else {
                 return Err(input.error("Unexpected token"));
@@ -106,7 +106,7 @@ pub fn handle_item(item: &Item, args: FuncArgs) -> Result<TokenStream, syn::Erro
         Item::ForeignMod(ref foreign_mod) => handle_foreign_mod(foreign_mod, args),
         _ => Err(Error::new(
             item.span(),
-            format!("Invalid target for #[{}]", FUNC_ATTR_NAME),
+            format!("Invalid target for #[{FUNC_ATTR_NAME}]"),
         )),
     }
 }

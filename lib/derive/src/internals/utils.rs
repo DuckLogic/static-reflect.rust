@@ -5,7 +5,7 @@ use std::io::Write;
 use syn::Item;
 
 pub fn is_derive_enabled(name: &str) -> bool {
-    match std::env::var(format!("DEBUG_DERIVE_{}", name)) {
+    match std::env::var(format!("DEBUG_DERIVE_{name}")) {
         Ok(s) => &*s == "1" || s.eq_ignore_ascii_case("true"),
         Err(_) => false,
     }
@@ -25,20 +25,20 @@ pub fn debug_proc_macro(macro_name: &str, input: &dyn Display, result: &TokenStr
     if !is_derive_enabled(macro_name) {
         return;
     }
-    let original = format!("{}", result);
+    let original = format!("{result}");
     match rustfmt_expr(&original) {
         Ok(formatted) => {
-            eprintln!("{}!({}):", macro_name, input);
+            eprintln!("{macro_name}!({input}):");
             for line in formatted.lines() {
-                eprintln!("  {}", line);
+                eprintln!("  {line}");
             }
         }
         Err(error) => {
-            eprintln!("{}!({}) caused rustfmt error:", macro_name, input);
+            eprintln!("{macro_name}!({input}) caused rustfmt error:");
             for line in error.lines() {
-                eprintln!("  {}", line);
+                eprintln!("  {line}");
             }
-            eprintln!("  original code: {}", original)
+            eprintln!("  original code: {original}")
         }
     }
 }
@@ -47,29 +47,28 @@ pub fn debug_derive(trait_name: &str, target: &dyn Display, result: &TokenStream
     if !is_derive_enabled(trait_name) {
         return;
     }
-    let original = format!("{}", result);
+    let original = format!("{result}");
     match rustfmt(&original) {
         Ok(formatted) => {
-            eprintln!("derive({}) for {}:", trait_name, target);
+            eprintln!("derive({trait_name}) for {target}:");
             for line in formatted.lines() {
-                eprintln!("  {}", line);
+                eprintln!("  {line}");
             }
         }
         Err(error) => {
             eprintln!(
-                "derive({}) for {} caused rustfmt error:",
-                trait_name, target
+                "derive({trait_name}) for {target} caused rustfmt error:"
             );
             for line in error.lines() {
-                eprintln!("  {}", line);
+                eprintln!("  {line}");
             }
-            eprintln!("  original code: {}", original)
+            eprintln!("  original code: {original}")
         }
     }
 }
 
 pub fn rustfmt_expr(target: &str) -> Result<String, String> {
-    let dummy = format!(r#"fn expr() {{ {} }}"#, target);
+    let dummy = format!(r#"fn expr() {{ {target} }}"#);
     rustfmt(&dummy)
 }
 
@@ -112,6 +111,6 @@ pub fn rustfmt(target: &str) -> Result<String, String> {
                 Err(stderr)
             }
         }
-        Err(e) => Err(format!("Unexpected IO error: {}", e)),
+        Err(e) => Err(format!("Unexpected IO error: {e}")),
     }
 }

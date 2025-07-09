@@ -564,22 +564,22 @@ impl Display for TypeInfo {
             TypeInfo::Unit => f.write_str("()"),
             TypeInfo::Never => f.write_str("!"),
             TypeInfo::Bool => f.write_str("bool"),
-            TypeInfo::Integer(tp) => write!(f, "{}", tp),
+            TypeInfo::Integer(tp) => write!(f, "{tp}"),
             TypeInfo::Float { size } => write!(f, "f{}", size.bytes() * 8),
-            TypeInfo::Slice { element_type } => write!(f, "[{}]", element_type),
+            TypeInfo::Slice { element_type } => write!(f, "[{element_type}]"),
             TypeInfo::Str => f.write_str("str"),
-            TypeInfo::Optional(inner_type) => write!(f, "Option<{}>", inner_type),
+            TypeInfo::Optional(inner_type) => write!(f, "Option<{inner_type}>"),
             TypeInfo::Pointer => f.write_str("*mut void"),
             TypeInfo::Structure(def) => f.write_str(def.name),
             TypeInfo::UntaggedUnion(def) => f.write_str(def.name),
             TypeInfo::CStyleEnum(def) => f.write_str(def.name),
             TypeInfo::TaggedUnion(def) => f.write_str(def.name),
-            TypeInfo::Extern { name } => write!(f, "extern {}", name),
-            TypeInfo::Magic { id, extra: None } => write!(f, "magic::{}", id),
+            TypeInfo::Extern { name } => write!(f, "extern {name}"),
+            TypeInfo::Magic { id, extra: None } => write!(f, "magic::{id}"),
             TypeInfo::Magic {
                 id,
                 extra: Some(extra),
-            } => write!(f, "magic::{}<{}>", id, extra),
+            } => write!(f, "magic::{id}<{extra}>"),
         }
     }
 }
@@ -998,7 +998,7 @@ impl<T: StaticReflect> TypeId<T> {
     /// If this type is a pointer
     #[inline]
     pub fn is_ptr(self) -> bool {
-        matches!(self.primitive(), Some(PrimitiveType::Pointer { .. }))
+        matches!(self.primitive(), Some(PrimitiveType::Pointer))
     }
     /// If this type is a floating point number (of any size)
     #[inline]

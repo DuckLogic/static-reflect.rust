@@ -10,9 +10,6 @@
 //! I'd be happy to add more features as long as they align with the general philosophy
 //! of compile-time reflection.
 #![deny(missing_docs)]
-#![feature(
-    const_option, // We use Option::unwrap
-)]
 #![cfg_attr(feature = "never", feature(never_type))]
 
 #[cfg(feature = "builtins")]
