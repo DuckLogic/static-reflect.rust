@@ -4,6 +4,8 @@
 //! types.
 use crate::{field_offset, StaticReflect, TypeInfo};
 use std::mem::MaybeUninit;
+use std::num::NonZero;
+use std::ptr::NonNull;
 
 /// A FFi-safe slice type (`&[T]`)
 ///
@@ -24,7 +26,7 @@ pub struct AsmSlice<T> {
     /// A pointer to the start of the memory
     ///
     /// May never be null, unless
-    pub ptr: *mut T,
+    pub ptr: NonNull<T>,
     /// The length of the slice
     pub len: usize,
 }
@@ -41,7 +43,7 @@ impl<'a, T: 'a> From<&'a [T]> for AsmSlice<T> {
     #[inline]
     fn from(slice: &'a [T]) -> Self {
         AsmSlice {
-            ptr: slice.as_ptr() as *mut _,
+            ptr: NonNull::from(slice).cast(),
             len: slice.len(),
         }
     }
@@ -56,9 +58,10 @@ unsafe impl<T: StaticReflect> StaticReflect for AsmSlice<T> {
 /// this is safe to send between threads
 unsafe impl<T: Sync> Send for AsmSlice<T> {}
 
-/// A FFI-safe UTF8 string.
+/// A FFI-safe conventionally UTF8 string.
 ///
-/// Unlike the rust type, this has a well-defined C representation.
+/// Unlike the rust type, this has a well-defined C representation
+/// and doesn't strictly enforce the UTF8 representation.
 ///
 /// ## Safety
 /// The underlying is expected to be UTF8. However,
@@ -74,7 +77,7 @@ impl AsmStr {
     /// A pointer to the bytes of the string
     #[inline]
     pub fn bytes_ptr(&self) -> *mut u8 {
-        self.bytes.ptr
+        self.bytes.ptr.as_ptr()
     }
     /// The length of the string in bytes
     #[inline]
