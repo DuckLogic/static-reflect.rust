@@ -4,8 +4,8 @@
 //! types.
 use crate::{field_offset, StaticReflect, TypeInfo};
 use std::mem::MaybeUninit;
-use std::num::NonZero;
 use std::ptr::NonNull;
+use bytemuck::{NoUninit, ZeroableInOption};
 
 /// A FFi-safe slice type (`&[T]`)
 ///
@@ -30,6 +30,8 @@ pub struct AsmSlice<T> {
     /// The length of the slice
     pub len: usize,
 }
+unsafe impl<T: StaticReflect + 'static> NoUninit for AsmSlice<T> {}
+unsafe impl<T: StaticReflect + 'static> ZeroableInOption for AsmSlice<T> {}
 /// A clone implementation that blindly
 /// copies the underlying bytes.
 impl<T: StaticReflect> Clone for AsmSlice<T> {
@@ -100,6 +102,8 @@ impl<'a> From<&'a str> for AsmStr {
         }
     }
 }
+unsafe impl ZeroableInOption for AsmStr {}
+unsafe impl NoUninit for AsmStr {}
 
 /// A FFI-safe alternative to Rust's [std::option::Option].
 ///
