@@ -47,7 +47,7 @@ impl<'a, T: 'a> From<&'a [T]> for AsmSlice<T> {
     }
 }
 unsafe impl<T: StaticReflect> StaticReflect for AsmSlice<T> {
-    const TYPE_INFO: TypeInfo = TypeInfo::Slice {
+    const TYPE_INFO: TypeInfo = TypeInfo::AsmSlice {
         element_type: &T::TYPE_INFO,
     };
 }
@@ -88,7 +88,7 @@ impl AsmStr {
     }
 }
 unsafe impl StaticReflect for AsmStr {
-    const TYPE_INFO: TypeInfo = TypeInfo::Str;
+    const TYPE_INFO: TypeInfo = TypeInfo::AsmStr;
 }
 impl<'a> From<&'a str> for AsmStr {
     fn from(s: &'a str) -> AsmStr {
@@ -184,7 +184,7 @@ impl<T> From<Option<T>> for AsmOption<T> {
     }
 }
 unsafe impl<T: StaticReflect> StaticReflect for AsmOption<T> {
-    const TYPE_INFO: TypeInfo = TypeInfo::Optional(&T::TYPE_INFO);
+    const TYPE_INFO: TypeInfo = TypeInfo::AsmOption(&T::TYPE_INFO);
 }
 
 /// This is an owned value, so it's safe to send

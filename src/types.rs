@@ -438,7 +438,7 @@ pub enum TypeInfo {
     ///
     /// Representation should match the [AsmSlice] type
     #[cfg(feature = "builtins")]
-    Slice {
+    AsmSlice {
         /// The type of the inner element
         element_type: &'static TypeInfo,
     },
@@ -447,12 +447,12 @@ pub enum TypeInfo {
     ///
     /// Internally represented by the [AsmStr] structure
     #[cfg(feature = "builtins")]
-    Str,
+    AsmStr,
     /// A very simple optional, represented as an [AsmOption](crate::builtins::AsmOption)
     ///
     /// This **never** uses the null pointer optimization
     #[cfg(feature = "builtins")]
-    Optional(&'static TypeInfo),
+    AsmOption(&'static TypeInfo),
     /// An untyped pointer
     ///
     /// This may be null.
@@ -525,12 +525,12 @@ impl TypeInfo {
             Integer(IntType { size, .. }) => size.bytes(),
             Float { size } => size.bytes(),
             #[cfg(feature = "builtins")]
-            Slice { .. } => std::mem::size_of::<AsmSlice<()>>(),
+            AsmSlice { .. } => std::mem::size_of::<crate::builtins::AsmSlice<()>>(),
             #[cfg(feature = "builtins")]
-            Optional(_inner) => unimplemented!(),
+            AsmOption(_inner) => unimplemented!(),
             Pointer => size_of::<*const ()>(),
             #[cfg(feature = "builtins")]
-            Str => size_of::<AsmStr>(),
+            AsmStr => size_of::<crate::builtins::AsmStr>(),
             Structure(def) => def.size,
             UntaggedUnion(def) => def.size,
             TaggedUnion(def) => def.size,
@@ -563,10 +563,10 @@ impl TypeInfo {
                 size: FloatSize::Double,
             } => align_of::<f64>(),
             #[cfg(feature = "builtins")]
-            TypeInfo::Slice { .. } | TypeInfo::Optional(_) => unimplemented!(),
+            TypeInfo::AsmSlice { .. } | TypeInfo::AsmOption(_) => unimplemented!(),
             TypeInfo::Pointer => align_of::<*const ()>(),
             #[cfg(feature = "builtins")]
-            TypeInfo::Str => align_of::<AsmStr>(),
+            TypeInfo::AsmStr => align_of::<AsmStr>(),
             TypeInfo::Structure(def) => def.alignment,
             TypeInfo::UntaggedUnion(def) => def.alignment,
             TypeInfo::CStyleEnum(def) => def.discriminant.align(),
@@ -582,9 +582,9 @@ impl Display for TypeInfo {
             TypeInfo::Bool => f.write_str("bool"),
             TypeInfo::Integer(tp) => write!(f, "{tp}"),
             TypeInfo::Float { size } => write!(f, "f{}", size.bytes() * 8),
-            TypeInfo::Slice { element_type } => write!(f, "[{element_type}]"),
-            TypeInfo::Str => f.write_str("str"),
-            TypeInfo::Optional(inner_type) => write!(f, "Option<{inner_type}>"),
+            TypeInfo::AsmSlice { element_type } => write!(f, "[{element_type}]"),
+            TypeInfo::AsmStr => f.write_str("str"),
+            TypeInfo::AsmOption(inner_type) => write!(f, "Option<{inner_type}>"),
             TypeInfo::Pointer => f.write_str("*mut void"),
             TypeInfo::Structure(def) => f.write_str(def.name),
             TypeInfo::UntaggedUnion(def) => f.write_str(def.name),
