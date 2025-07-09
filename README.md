@@ -13,5 +13,5 @@ Unfortunately, there is very little documentation right now.
 Hopefully, that will change in the future.
 
 ## Related Projects
-- [facet](https://github.com/facet-rs/facet) - Very similar, much more recent, appears very high quality.
+- [facet](https://github.com/facet-rs/facet) - Very similar, much more recent, appears very high quality. *Unsound*: Does not require `#[repr(C)]` to manipulate type layout.
 - [const-type-layout](https://github.com/juntyr/const-type-layout) - Similar, but far more complex use of type system. Requires specialization and many other nightly features.
