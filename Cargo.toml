@@ -11,9 +11,9 @@ readme = "README.md"
 static-reflect-derive = { version = "0.2.0-alpha.7", path = "lib/derive", optional = true }
 
 [features]
-default = ["never", "builtins", "derive"]
-# Support using the never type
-never = []
+default = ["builtins", "derive"]
+# Support nightly-only features
+nightly = []
 # Support the 'builtin' alternative to stdlib types
 builtins = []
 # Procedural derive

@@ -10,7 +10,7 @@
 //! I'd be happy to add more features as long as they align with the general philosophy
 //! of compile-time reflection.
 #![deny(missing_docs)]
-#![cfg_attr(feature = "never", feature(never_type))]
+#![cfg_attr(feature = "nightly", feature(never_type))]
 
 #[cfg(feature = "builtins")]
 pub mod builtins;
@@ -26,6 +26,17 @@ use std::ops::{Add, Mul, Sub};
 
 #[cfg(feature = "derive")]
 pub use static_reflect_derive::{reflect_func, StaticReflect};
+
+
+/// Equivalent to `!` on nightly and [`core::convert::Infallible`] on stable.
+pub type Never = ActualNever;
+
+#[cfg(feature = "nightly")]
+type ActualNever = !;
+
+#[cfg(not(feature = "nightly"))]
+type ActualNever = ::core::convert::Infallible;
+
 
 /// The trait for types whose information can be accessed via static reflection.
 ///

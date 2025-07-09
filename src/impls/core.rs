@@ -45,7 +45,11 @@ unsafe impl PrimFloat for f64 {
 }
 
 // Builtin support for the never type
+#[cfg(feature = "nightly")]
 impl_primitive!(! => TypeInfo::Never);
+
+// treat `core::convert::Infallible` as never type
+impl_primitive!(core::convert::Infallible => TypeInfo::Never);
 
 /// Support [StaticReflect] for [ManuallyDrop] by just representing the inner type
 unsafe impl<T: StaticReflect> StaticReflect for ManuallyDrop<T> {

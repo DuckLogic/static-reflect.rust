@@ -411,11 +411,13 @@ pub enum TypeInfo {
     ///
     /// Used for functions that return nothing
     Unit,
-    /// An impossible type,
+    /// The type for functions that can never return or values that can never occur.
     ///
     /// The mere existence of this type at runtime is undefined behavior.
     /// Functions that have this as their `return` type never actually return.
-    #[cfg(feature = "never")]
+    ///
+    /// This represents the Rust `!` type, and also the [`core::convert::Infallible`] type.
+    /// Using the [`Never`] alias is a way to consistently
     Never,
     /// A boolean
     ///
@@ -510,8 +512,15 @@ impl TypeInfo {
         use std::mem::size_of;
         match *self {
             Unit => 0,
-            #[cfg(feature = "never")]
-            Never => size_of::<!>(),
+            Never => {
+                const {
+                    #[cfg(feature = "nightly")] {
+                        assert!(size_of::<!>() == 0);
+                    }
+                    assert!(size_of::<core::convert::Infallible>() == 0);
+                }
+                0
+            },
             Bool => size_of::<bool>(),
             Integer(IntType { size, .. }) => size.bytes(),
             Float { size } => size.bytes(),
@@ -535,8 +544,15 @@ impl TypeInfo {
         use std::mem::align_of;
         match *self {
             TypeInfo::Unit => align_of::<()>(),
-            #[cfg(feature = "never")]
-            TypeInfo::Never => align_of::<!>(),
+            TypeInfo::Never => {
+                const {
+                    #[cfg(feature = "nightly")] {
+                        assert!(align_of::<!>() == 1);
+                    }
+                    assert!(align_of::<core::convert::Infallible>() == 1);
+                    1
+                }
+            },
             TypeInfo::Magic { .. } | TypeInfo::Extern { .. } => 0,
             TypeInfo::Bool => align_of::<bool>(),
             TypeInfo::Integer(tp) => tp.align(),
@@ -824,10 +840,9 @@ pub enum PrimitiveType {
     /// This is zero-length in the Rust sense,
     /// not the C sense
     Unit,
-    /// The type for functions/instructions that can never return or occur
+    /// The type for functions that can never return or values that can never occur.
     ///
-    /// It is undefined behavior for this type to even exist
-    #[cfg(feature = "never")]
+    /// Equivalent to [`TypeInfo::Never`].
     Never,
     /// A boolean type, corresponding to Rust's [bool] type
     Bool,
