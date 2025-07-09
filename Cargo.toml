@@ -3,7 +3,7 @@ name = "static-reflect"
 version = "0.2.0-alpha.8"
 edition = "2021"
 description = "Static type information, giving a form of compile-time reflection"
-license = "MIT"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/DuckLogic/rust-static-reflect"
 readme = "README.md"
 
