@@ -17,8 +17,7 @@ pub mod builtins;
 pub mod funcs;
 mod macros;
 pub mod types;
-
-mod core;
+mod impls;
 
 pub use crate::types::TypeInfo;
 
