@@ -29,8 +29,6 @@ macro_rules! impl_ints {
 // NOTE: Pointer sized integers have machine-dependent implementation :(
 impl_ints!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize);
 
-#[cfg(feature = "builtins")]
-impl_primitive!(str => TypeInfo::Str);
 impl_primitive!(() => TypeInfo::Unit);
 impl_primitive!(bool => TypeInfo::Bool);
 impl_primitive!(f32 => TypeInfo::F32);
