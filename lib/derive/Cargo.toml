@@ -1,9 +1,9 @@
 [package]
 name = "static-reflect-derive"
 description = "Procedural derive for static-reflect"
-version = "0.2.0-alpha.8"
+version = "0.2.0-alpha.9"
 edition = "2021"
-license = "MIT"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/DuckLogic/rust-static-reflect"
 
 [lib]
