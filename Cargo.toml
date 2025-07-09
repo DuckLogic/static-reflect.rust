@@ -9,6 +9,8 @@ readme = "README.md"
 
 [dependencies]
 static-reflect-derive = { version = "0.2.0-alpha.7", path = "lib/derive", optional = true }
+bytemuck = "1"
+
 
 [features]
 default = ["builtins", "derive"]

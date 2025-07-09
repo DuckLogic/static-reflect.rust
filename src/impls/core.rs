@@ -1,5 +1,5 @@
 //! Implementations of [StaticReflect] for core types (for `#![no_std]`)
-use crate::types::{FloatSize, IntSize, IntType, SimpleNonZeroRepr, TypeInfo};
+use crate::types::{FloatSize, IntSize, IntType, TypeInfo};
 use crate::{PrimFloat, PrimInt, StaticReflect};
 use core::ptr::NonNull;
 use std::mem::{self, ManuallyDrop};
@@ -76,28 +76,23 @@ unsafe impl<T> StaticReflect for *const T {
     const TYPE_INFO: TypeInfo = TypeInfo::Pointer;
 }
 
-unsafe impl<T> SimpleNonZeroRepr for NonNull<T> {}
 unsafe impl<T> StaticReflect for NonNull<T> {
     const TYPE_INFO: TypeInfo = TypeInfo::Pointer;
 }
-unsafe impl SimpleNonZeroRepr for NonZeroUsize {}
 unsafe impl StaticReflect for NonZeroUsize {
     const TYPE_INFO: TypeInfo = <usize as StaticReflect>::TYPE_INFO;
 }
-unsafe impl SimpleNonZeroRepr for NonZeroU32 {}
 unsafe impl StaticReflect for NonZeroU32 {
     const TYPE_INFO: TypeInfo = u32::TYPE_INFO;
 }
-unsafe impl SimpleNonZeroRepr for NonZeroU8 {}
 unsafe impl StaticReflect for NonZeroU8 {
     const TYPE_INFO: TypeInfo = u8::TYPE_INFO;
 }
-unsafe impl SimpleNonZeroRepr for NonZeroI32 {}
 unsafe impl StaticReflect for NonZeroI32 {
     const TYPE_INFO: TypeInfo = i32::TYPE_INFO;
 }
 
-unsafe impl<T: SimpleNonZeroRepr> StaticReflect for Option<T> {
+unsafe impl<T: StaticReflect + bytemuck::ZeroableInOption> StaticReflect for Option<T> {
     /// We have the representation as our internals,
     /// except for the fact we might be null
     const TYPE_INFO: TypeInfo = T::TYPE_INFO;

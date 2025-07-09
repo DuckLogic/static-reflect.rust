@@ -6,19 +6,8 @@ use std::fmt::{self, Debug, Display, Formatter, Write};
 use std::marker::PhantomData;
 
 #[cfg(feature = "builtins")]
-use crate::builtins::{AsmSlice, AsmStr};
+use crate::builtins::{AsmStr};
 use std::alloc::Layout;
-
-/// A type which is never zero, and where optional types
-/// are guaranteed to use the null-pointer representation
-///
-/// If `T: SimpleNonZeroRepr` -> `sizeof(Option<T>) == sizeof(T) && repr(Option<T>) == repr(T)`
-///
-/// ## Safety
-/// Zero must never be a valid value for this type.
-///
-/// Requires that` Option<Self>` has same representation as `Self`.
-pub unsafe trait SimpleNonZeroRepr: StaticReflect {}
 
 /// An integer size, named in the style of C/Java
 ///
